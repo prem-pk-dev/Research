@@ -286,11 +286,17 @@
     quality?.addEventListener("input",updateQuality);
     format?.addEventListener("change",updateQuality);
     updateQuality();
+    const resetSelection=()=>{
+      if(previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl=null; }
+      if(downloadUrl) { URL.revokeObjectURL(downloadUrl); downloadUrl=null; }
+      $("#preview").textContent="Choose a JPG, PNG or WebP image to begin.";
+      $("#imageResult").classList.add("hidden");
+    };
     fileInput?.addEventListener("change",event=>{
       const file=event.target.files?.[0];
-      if(!file) { selectedFile=null; return; }
+      if(!file) { selectedFile=null; resetSelection(); return; }
       if(!["image/jpeg","image/png","image/webp"].includes(file.type)) {
-        selectedFile=null; fileInput.value=""; toast("Choose a JPG, PNG or WebP image"); return;
+        selectedFile=null; fileInput.value=""; resetSelection(); toast("Choose a JPG, PNG or WebP image"); return;
       }
       selectedFile=file;
       if(previewUrl) URL.revokeObjectURL(previewUrl);
