@@ -1,1 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://YOUR-DOMAIN.example/</loc></url><url><loc>https://YOUR-DOMAIN.example/tools.html</loc></url><url><loc>https://YOUR-DOMAIN.example/categories.html</loc></url></urlset>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://research-toolnest.pages.dev/</loc></url>
+<url><loc>https://research-toolnest.pages.dev/tools.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/categories.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/pricing.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/about.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/contact.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/privacy.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/terms.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/affiliate-disclosure.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/tools/word-counter.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/tools/case-converter.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/tools/json-formatter.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/tools/base64-converter.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/tools/url-encoder.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/tools/image-compressor.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/tools/password-generator.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/tools/percentage-calculator.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/tools/age-calculator.html</loc></url>
+<url><loc>https://research-toolnest.pages.dev/tools/unit-converter.html</loc></url>
+</urlset>
