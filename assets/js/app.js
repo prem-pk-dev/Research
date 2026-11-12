@@ -206,13 +206,19 @@
       if(!groups.length) { toast("Select at least one character type"); return; }
       if(length<groups.length) { toast("Choose a longer password for the selected character types"); return; }
       const all=groups.join("");
-      const passwords=[];
-      for(let n=0;n<count;n++) {
-        const chars=groups.map(group=>group[randomInt(group.length)]);
-        while(chars.length<length) chars.push(all[randomInt(all.length)]);
-        passwords.push(shuffle(chars).join(""));
+      output.value="";
+      try {
+        const passwords=[];
+        for(let n=0;n<count;n++) {
+          const chars=groups.map(group=>group[randomInt(group.length)]);
+          while(chars.length<length) chars.push(all[randomInt(all.length)]);
+          passwords.push(shuffle(chars).join(""));
+        }
+        output.value=passwords.join("\n");
+      } catch {
+        output.value="";
+        toast("Secure random generation failed. Check browser security settings and try again.");
       }
-      output.value=passwords.join("\n");
     };
     $("#generate")?.addEventListener("click",generate);
     generate();
@@ -385,7 +391,7 @@
         const mime=format.value;
         try { canvas.toBlob(blob=>{
           if(!isCurrentRequest()) return;
-          if(!blob) { toast("Could not create the output image"); return;
+          if(!blob) { toast("Could not create the output image"); return; }
           if(blob.type!==mime) { toast("This output format is not supported by your browser"); return; }
           if(downloadUrl) URL.revokeObjectURL(downloadUrl);
           downloadUrl=URL.createObjectURL(blob);
