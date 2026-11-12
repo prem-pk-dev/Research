@@ -23,7 +23,10 @@ This checklist separates source-level review from browser/device verification. A
 ### JSON Formatter
 - [x] Parse errors clear stale output and report an error.
 - [x] Format and minify use JSON.parse / JSON.stringify locally.
-- [ ] Verify empty input, arrays, nested values, large payloads, malformed JSON, and copy/download behavior.
+- [x] Runtime regression checks passed for empty input, arrays, nested objects, null, strings, numbers, malformed JSON, trailing commas, unquoted keys, and trailing content.
+- [x] A 1.19 MB JSON payload formatted, minified, and round-tripped without data loss in the Node runtime test.
+- [x] Source review confirms copy and JSON download controls are connected to the output field.
+- [ ] Verify copy/download behavior and large-payload responsiveness in real browsers.
 
 ### Base64 Converter
 - [x] UTF-8 encoding uses TextEncoder and chunked byte-to-binary conversion.
