@@ -263,9 +263,17 @@
       return date.getFullYear()===year&&date.getMonth()===month-1&&date.getDate()===day?date:null;
     };
     const addMonthsClamped=(date,count)=>{
-      const first=new Date(date.getFullYear(),date.getMonth()+count,1);
-      const lastDay=new Date(first.getFullYear(),first.getMonth()+1,0).getDate();
-      return new Date(first.getFullYear(),first.getMonth(),Math.min(date.getDate(),lastDay));
+      const monthIndex=date.getMonth()+count;
+      const year=date.getFullYear()+Math.floor(monthIndex/12);
+      const month=((monthIndex%12)+12)%12;
+      // setFullYear avoids the Date constructor's 1900 offset for years 00–99.
+      const lastDate=new Date(0);
+      lastDate.setHours(0,0,0,0);
+      lastDate.setFullYear(year,month+1,0);
+      const result=new Date(0);
+      result.setHours(0,0,0,0);
+      result.setFullYear(year,month,Math.min(date.getDate(),lastDate.getDate()));
+      return result;
     };
     $("#calcAge")?.addEventListener("click",()=>{
       const birth=parseDate($("#birth").value),asOf=parseDate($("#asof").value);
