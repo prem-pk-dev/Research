@@ -120,7 +120,7 @@
         : Array.from(text).length;
       $("#words").textContent=words;
       $("#chars").textContent=chars;
-      $("#sentences").textContent=(text.match(/[.!?]+(?=\s|$)/gu)||[]).length;
+      $("#sentences").textContent=(text.match(/[.!?]+["'”’»)}\]]*(?=\s|$)/gu)||[]).length;
       $("#paragraphs").textContent=text.trim()?text.trim().split(/\n\s*\n/u).length:0;
       $("#reading").textContent=words?Math.max(1,Math.ceil(words/200))+" min":"0 min";
     };
