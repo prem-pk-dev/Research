@@ -222,15 +222,18 @@
     const calculate=()=>{
       const rawX=$("#x").value,rawY=$("#y").value,rawOld=$("#old").value,rawNew=$("#new").value;
       const x=Number(rawX),y=Number(rawY),a=Number(rawOld),b=Number(rawNew);
-      $("#result1").textContent=rawX===""||rawY===""||!Number.isFinite(x)||!Number.isFinite(y)
-        ?"Enter valid numbers":x+"% of "+y+" = "+Number((x*y/100).toFixed(7));
+      const amount=x*y/100;
+      $("#result1").textContent=rawX===""||rawY===""||!Number.isFinite(x)||!Number.isFinite(y)||!Number.isFinite(amount)
+        ?"Enter numbers that produce a finite result":x+"% of "+y+" = "+Number(amount.toFixed(7));
       if(rawOld===""||rawNew===""||!Number.isFinite(a)||!Number.isFinite(b)) {
         $("#result2").textContent="Enter valid original and new values";
       } else if(a===0) {
         $("#result2").textContent="Percentage change is undefined when the original value is zero";
       } else {
         const change=(b-a)/Math.abs(a)*100;
-        $("#result2").textContent=Math.abs(change).toFixed(2)+"% "+(change>0?"increase":change<0?"decrease":"no change");
+        $("#result2").textContent=Number.isFinite(change)
+          ?Math.abs(change).toFixed(2)+"% "+(change>0?"increase":change<0?"decrease":"no change")
+          :"Values are too large to calculate safely";
       }
     };
     ["x","y","old","new"].forEach(id=>$("#"+id)?.addEventListener("input",calculate));
@@ -290,6 +293,7 @@
         $("#unitResult").textContent="Temperature cannot be below absolute zero."; return;
       }
       const result=category==="temperature"?temperature(value,from,to):value*units[category][from]/units[category][to];
+      if(!Number.isFinite(result)) { $("#unitResult").textContent="The converted value is outside the supported numeric range."; return; }
       $("#unitResult").textContent=value+" "+from+" = "+Number(result.toPrecision(9))+" "+to;
     };
     const populate=()=>{
