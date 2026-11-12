@@ -134,7 +134,7 @@
       if(mode==="upper") output.value=value.toLocaleUpperCase();
       else if(mode==="lower") output.value=value.toLocaleLowerCase();
       else if(mode==="title") output.value=value.toLocaleLowerCase().replace(/(^|[\s-])(\p{L})/gu,(_,space,letter)=>space+letter.toLocaleUpperCase());
-      else output.value=value.toLocaleLowerCase().replace(/(^\s*\p{L}|[.!?]\s+\p{L})/gu,match=>match.toLocaleUpperCase());
+      else output.value=value.toLocaleLowerCase().replace(/(^\s*)(\p{L})|([.!?]+["'”’»)}\]]*\s+)(\p{L})/gu,(_,leading,first,boundary,next)=>leading!==undefined?leading+first.toLocaleUpperCase():boundary+next.toLocaleUpperCase());
     }));
   }
 
