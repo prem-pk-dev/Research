@@ -384,8 +384,8 @@
         } catch { toast("The image could not be rendered. Try a smaller image."); return; }
         const mime=format.value;
         try { canvas.toBlob(blob=>{
-          if(!blob) { toast("Could not create the output image"); return; }
           if(!isCurrentRequest()) return;
+          if(!blob) { toast("Could not create the output image"); return;
           if(blob.type!==mime) { toast("This output format is not supported by your browser"); return; }
           if(downloadUrl) URL.revokeObjectURL(downloadUrl);
           downloadUrl=URL.createObjectURL(blob);
