@@ -65,12 +65,12 @@
       $$("[data-menu][aria-expanded='true']").forEach(button=>button.setAttribute("aria-expanded","false"));
     }
   });
-  $(".links a").forEach(link=>{
+  $$(".links a").forEach(link=>{
     try {
       if(new URL(link.href,window.location.href).pathname===window.location.pathname) link.setAttribute("aria-current","page");
     } catch { /* Ignore malformed or non-local navigation links. */ }
   });
-  $(".links a").forEach(link=>link.addEventListener("click",()=>{
+  $$(".links a").forEach(link=>link.addEventListener("click",()=>{
     const nav=link.closest(".links");
     nav?.classList.remove("open");
     nav?.closest(".nav")?.querySelector("[data-menu]")?.setAttribute("aria-expanded","false");
