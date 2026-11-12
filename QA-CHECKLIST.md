@@ -66,8 +66,10 @@ This checklist separates source-level review from browser/device verification. A
 ### Age Calculator
 - [x] Validates calendar dates and rejects an end date before birth date.
 - [x] Uses calendar-day arithmetic in UTC to avoid daylight-saving day-length errors.
-- [x] Clamps month additions to valid month-end dates.
-- [ ] Verify leap-day birthdays, month ends, leap years, historical dates, and browser date-input limits.
+- [x] Clamps month additions to valid month-end dates and keeps month components normalized to 0–11.
+- [x] Handles years 00–99 without JavaScript's 1900 offset in both month arithmetic and UTC day comparisons.
+- [x] Focused Node regression tests passed for leap-day birthdays, month ends, invalid/reversed dates, and historical years; 17,147 additional calendar property checks passed with normalized month/day components.
+- [ ] Verify leap-day birthday policy, month ends, leap years, historical dates, and browser date-input limits in real browsers.
 
 ### Unit Converter
 - [x] Supports length, weight, temperature, and digital storage.
