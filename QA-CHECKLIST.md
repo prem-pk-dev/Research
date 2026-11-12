@@ -12,6 +12,7 @@ This checklist separates source-level review from browser/device verification. A
 - [x] Empty input returns zero counts.
 - [x] Words use whitespace splitting; paragraph count uses blank-line separation.
 - [x] Character count uses grapheme segmentation where Intl.Segmenter exists, with a Unicode code-point fallback.
+- [x] Sentence counting includes punctuation followed by common closing quotation marks and brackets.
 - [ ] Verify emoji, combining marks, CJK text, punctuation, and CRLF in current Chrome, Firefox, and Safari.
 
 ### Case Converter
