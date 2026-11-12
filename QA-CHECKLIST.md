@@ -33,6 +33,8 @@ This checklist separates source-level review from browser/device verification. A
 
 ### URL Encoder
 - [x] Uses encodeURIComponent / decodeURIComponent and catches malformed percent sequences.
+- [x] Focused runtime checks passed for spaces, literal plus signs, reserved URL-component characters, Hindi/emoji, empty input, malformed percent escapes, invalid UTF-8 escapes, and lone-surrogate encoding errors.
+- [x] Confirmed `+` remains a literal plus during component decoding; this tool encodes/decodes URL components, not form-urlencoded query strings.
 - [ ] Verify reserved characters, Unicode, spaces, plus signs, empty input, and malformed escapes.
 
 ### Image Compressor
