@@ -59,7 +59,9 @@ This checklist separates source-level review from browser/device verification. A
 ### Percentage Calculator
 - [x] Rejects empty/non-finite inputs and handles zero as the original value for percentage change.
 - [x] Supports decimal inputs (step=any).
-- [ ] Verify positive/negative values, zero, fractional values, very large values, and rounding expectations.
+- [x] Scales large operands before percentage arithmetic to avoid avoidable intermediate overflow; opposite-sign values near the numeric limit produce the expected finite percentage change.
+- [x] Focused Node runtime checks passed for increases, decreases, negative originals, zero, tiny decimals, very large opposite-sign values, and percentage-of-value multiplication near floating-point limits.
+- [ ] Verify positive/negative values, zero, fractional values, very large values, and rounding expectations in real browsers.
 
 ### Age Calculator
 - [x] Validates calendar dates and rejects an end date before birth date.
