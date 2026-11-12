@@ -279,9 +279,16 @@
       let months=(asOf.getFullYear()-cursor.getFullYear())*12+asOf.getMonth()-cursor.getMonth();
       let monthCursor=addMonthsClamped(cursor,months);
       if(monthCursor>asOf) { months--; monthCursor=addMonthsClamped(cursor,months); }
-      // Compare calendar dates in UTC so daylight-saving transitions cannot
-      // turn a whole calendar day into 23 or 25 hours.
-      const toUtcDay=date=>Date.UTC(date.getFullYear(),date.getMonth(),date.getDate());
+      // Keep the conventional age components normalized: months are 0–11.
+      if(months>11) { months=11; monthCursor=addMonthsClamped(cursor,months); }
+      // Build UTC dates with setUTCFullYear; Date.UTC remaps years 00–99 to 1900–1999.
+      // UTC calendar arithmetic also avoids daylight-saving day-length changes.
+      const toUtcDay=date=>{
+        const utc=new Date(0);
+        utc.setUTCHours(0,0,0,0);
+        utc.setUTCFullYear(date.getFullYear(),date.getMonth(),date.getDate());
+        return utc.getTime();
+      };
       const days=Math.round((toUtcDay(asOf)-toUtcDay(monthCursor))/86400000);
       $("#ageResult").textContent=years+" years, "+months+" months and "+days+" days";
     });
