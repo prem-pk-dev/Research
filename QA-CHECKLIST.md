@@ -53,6 +53,7 @@ This checklist separates source-level review from browser/device verification. A
 - [x] Uses Web Crypto and rejection sampling for unbiased bounded random integers.
 - [x] Shuffles selected required character groups and validates length/count bounds.
 - [x] Rejects an empty character-set selection.
+- [x] Clears stale output before generation and catches Web Crypto failures without exposing an unhandled error.
 - [ ] Verify secure-context behavior, every character-set combination, minimum/maximum length, count limits, and clipboard behavior.
 
 ### Percentage Calculator
