@@ -45,6 +45,8 @@ This checklist separates source-level review from browser/device verification. A
 - [x] Enforces 40 MP and 12,000 px per-side processing limits.
 - [x] Handles missing canvas context, decode errors, null blobs, and unsupported output MIME.
 - [x] Revokes preview/download object URLs when replaced.
+- [x] Uses request IDs and captured file/preview references to ignore stale decode and canvas callbacks after file changes or newer compression requests.
+- [x] Source review confirms PNG keeps alpha, JPEG is composited on white, and output MIME is checked against the requested format.
 - [ ] Verify real JPG/PNG/WebP files, transparency, EXIF orientation, browser MIME support, large images, and downloads on desktop/mobile.
 
 ### Password Generator
