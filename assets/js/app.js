@@ -211,10 +211,18 @@
 
   if(tool==="percentage-calculator") {
     const calculate=()=>{
-      const x=Number($("#x").value),y=Number($("#y").value);
-      const a=Number($("#old").value),b=Number($("#new").value);
-      $("#result1").textContent=(Number.isFinite(x*y/100)?x+"% of "+y+" = "+Number((x*y/100).toFixed(7)):"Enter valid numbers");
-      $("#result2").textContent=a===0?"Undefined when original value is zero":Math.abs((b-a)/Math.abs(a)*100).toFixed(2)+"% "+(b>=a?"increase":"decrease");
+      const rawX=$("#x").value,rawY=$("#y").value,rawOld=$("#old").value,rawNew=$("#new").value;
+      const x=Number(rawX),y=Number(rawY),a=Number(rawOld),b=Number(rawNew);
+      $("#result1").textContent=rawX===""||rawY===""||!Number.isFinite(x)||!Number.isFinite(y)
+        ?"Enter valid numbers":x+"% of "+y+" = "+Number((x*y/100).toFixed(7));
+      if(rawOld===""||rawNew===""||!Number.isFinite(a)||!Number.isFinite(b)) {
+        $("#result2").textContent="Enter valid original and new values";
+      } else if(a===0) {
+        $("#result2").textContent="Percentage change is undefined when the original value is zero";
+      } else {
+        const change=(b-a)/Math.abs(a)*100;
+        $("#result2").textContent=Math.abs(change).toFixed(2)+"% "+(change>0?"increase":change<0?"decrease":"no change");
+      }
     };
     ["x","y","old","new"].forEach(id=>$("#"+id)?.addEventListener("input",calculate));
     calculate();
@@ -222,21 +230,32 @@
 
   if(tool==="age-calculator") {
     const now=new Date();
-    const localDate= new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10);
+    const localDate=[now.getFullYear(),String(now.getMonth()+1).padStart(2,"0"),String(now.getDate()).padStart(2,"0")].join("-");
     $("#asof").value=localDate;
+    const parseDate=value=>{
+      if(!/^\\d{4}-\\d{2}-\\d{2}$/u.test(value)) return null;
+      const [year,month,day]=value.split("-").map(Number);
+      const date=new Date(year,month-1,day);
+      return date.getFullYear()===year&&date.getMonth()===month-1&&date.getDate()===day?date:null;
+    };
+    const addMonthsClamped=(date,count)=>{
+      const first=new Date(date.getFullYear(),date.getMonth()+count,1);
+      const lastDay=new Date(first.getFullYear(),first.getMonth()+1,0).getDate();
+      return new Date(first.getFullYear(),first.getMonth(),Math.min(date.getDate(),lastDay));
+    };
     $("#calcAge")?.addEventListener("click",()=>{
-      const birthValue=$("#birth").value,asOfValue=$("#asof").value;
-      if(!birthValue || !asOfValue) { $("#ageResult").textContent="Choose both dates to calculate age."; return; }
-      const birth=new Date(birthValue+"T00:00:00"),asOf=new Date(asOfValue+"T00:00:00");
-      if(Number.isNaN(birth.getTime())||Number.isNaN(asOf.getTime())||asOf<birth) {
+      const birth=parseDate($("#birth").value),asOf=parseDate($("#asof").value);
+      if(!birth||!asOf||asOf<birth) {
         $("#ageResult").textContent="Enter valid dates; the end date must be on or after the birth date.";
         return;
       }
       let years=asOf.getFullYear()-birth.getFullYear();
-      let months=asOf.getMonth()-birth.getMonth();
-      let days=asOf.getDate()-birth.getDate();
-      if(days<0) { months--; days+=new Date(asOf.getFullYear(),asOf.getMonth(),0).getDate(); }
-      if(months<0) { years--; months+=12; }
+      let cursor=addMonthsClamped(birth,years*12);
+      if(cursor>asOf) { years--; cursor=addMonthsClamped(birth,years*12); }
+      let months=(asOf.getFullYear()-cursor.getFullYear())*12+asOf.getMonth()-cursor.getMonth();
+      let monthCursor=addMonthsClamped(cursor,months);
+      if(monthCursor>asOf) { months--; monthCursor=addMonthsClamped(cursor,months); }
+      const days=Math.round((asOf-monthCursor)/86400000);
       $("#ageResult").textContent=years+" years, "+months+" months and "+days+" days";
     });
   }
@@ -257,6 +276,10 @@
       if(raw==="") { $("#unitResult").textContent="Enter a value to convert."; return; }
       const value=Number(raw);
       if(!Number.isFinite(value)) { $("#unitResult").textContent="Enter a valid number."; return; }
+      if(category!=="temperature"&&value<0) { $("#unitResult").textContent="Length, weight and digital storage cannot be negative."; return; }
+      if(category==="temperature"&&((from==="K"&&value<0)||(from==="C"&&value< -273.15)||(from==="F"&&value< -459.67))) {
+        $("#unitResult").textContent="Temperature cannot be below absolute zero."; return;
+      }
       const result=category==="temperature"?temperature(value,from,to):value*units[category][from]/units[category][to];
       $("#unitResult").textContent=value+" "+from+" = "+Number(result.toPrecision(9))+" "+to;
     };
@@ -315,15 +338,21 @@
       if(!selectedFile) { toast("Choose an image first"); return; }
       const image=new Image();
       image.onload=()=>{
+        if(!selectedFile||image.src!==previewUrl) return;
+        const width=image.naturalWidth,height=image.naturalHeight;
+        if(!width||!height||width*height>40000000||width>12000||height>12000) {
+          toast("Image is too large to process safely (maximum 40 megapixels and 12,000 px per side)."); return;
+        }
         const canvas=document.createElement("canvas");
-        canvas.width=image.naturalWidth; canvas.height=image.naturalHeight;
+        canvas.width=width; canvas.height=height;
         const context=canvas.getContext("2d");
         if(!context) { toast("Canvas is unavailable in this browser"); return; }
         if(format.value==="image/jpeg") { context.fillStyle="#fff"; context.fillRect(0,0,canvas.width,canvas.height); }
         context.drawImage(image,0,0);
         const mime=format.value;
-        canvas.toBlob(blob=>{
+        try { canvas.toBlob(blob=>{
           if(!blob) { toast("Could not create the output image"); return; }
+          if(!selectedFile||image.src!==previewUrl) return;
           if(blob.type!==mime) { toast("This output format is not supported by your browser"); return; }
           if(downloadUrl) URL.revokeObjectURL(downloadUrl);
           downloadUrl=URL.createObjectURL(blob);
@@ -336,7 +365,8 @@
           $("#saved").textContent=saving>=0?saving.toFixed(1)+"% smaller":Math.abs(saving).toFixed(1)+"% larger";
           $("#imageResult").classList.remove("hidden");
           toast("Image is ready to download");
-        },mime,mime==="image/png"?undefined:Number(quality.value));
+        },mime,mime==="image/png"?undefined:Number(quality.value)); }
+        catch { toast("Image processing failed. Try a smaller image or another format."); }
       };
       image.onerror=()=>toast("The selected image could not be decoded");
       image.src=previewUrl;
