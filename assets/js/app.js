@@ -332,6 +332,9 @@
       if(!["image/jpeg","image/png","image/webp"].includes(file.type)) {
         selectedFile=null; fileInput.value=""; resetSelection(); toast("Choose a JPG, PNG or WebP image"); return;
       }
+      if(file.size>25*1024*1024) {
+        selectedFile=null; fileInput.value=""; resetSelection(); toast("Choose an image smaller than 25 MB."); return;
+      }
       selectedFile=file;
       if(previewUrl) URL.revokeObjectURL(previewUrl);
       previewUrl=URL.createObjectURL(file);
@@ -358,8 +361,10 @@
         canvas.width=width; canvas.height=height;
         const context=canvas.getContext("2d");
         if(!context) { toast("Canvas is unavailable in this browser"); return; }
-        if(format.value==="image/jpeg") { context.fillStyle="#fff"; context.fillRect(0,0,canvas.width,canvas.height); }
-        context.drawImage(image,0,0);
+        try {
+          if(format.value==="image/jpeg") { context.fillStyle="#fff"; context.fillRect(0,0,canvas.width,canvas.height); }
+          context.drawImage(image,0,0);
+        } catch { toast("The image could not be rendered. Try a smaller image."); return; }
         const mime=format.value;
         try { canvas.toBlob(blob=>{
           if(!blob) { toast("Could not create the output image"); return; }
