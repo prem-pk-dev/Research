@@ -7,3 +7,7 @@ img,canvas,svg{max-width:100%}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
 .links a[aria-current=page]{color:var(--brand);font-weight:800}.links a:focus-visible,.category:focus-visible,.card:focus-visible{outline:3px solid var(--cyan);outline-offset:4px;border-radius:10px}
+
+.skip-link{position:absolute;left:16px;top:-60px;z-index:100;padding:10px 14px;border-radius:10px;background:var(--surface);color:var(--text);border:2px solid var(--brand);box-shadow:var(--shadow);font-weight:800}
+.skip-link:focus{top:12px}
+#main-content{scroll-margin-top:88px}
