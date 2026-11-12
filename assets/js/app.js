@@ -194,8 +194,10 @@
     }
     const generate=()=>{
       if(!globalThis.crypto?.getRandomValues) { toast("Secure password generation is unavailable in this browser context."); return; }
-      const length=Math.max(8,Math.min(128,Math.floor(Number($("#length").value)||20)));
-      const count=Math.max(1,Math.min(10,Math.floor(Number($("#count").value)||1)));
+      const rawLength=$("#length").value,rawCount=$("#count").value;
+      const length=Number(rawLength),count=Number(rawCount);
+      if(!Number.isInteger(length)||length<8||length>128) { toast("Password length must be between 8 and 128 characters."); return; }
+      if(!Number.isInteger(count)||count<1||count>10) { toast("Generate between 1 and 10 passwords at a time."); return; }
       const groups=[];
       if($("#upper").checked) groups.push("ABCDEFGHJKLMNPQRSTUVWXYZ");
       if($("#lower").checked) groups.push("abcdefghijkmnopqrstuvwxyz");
