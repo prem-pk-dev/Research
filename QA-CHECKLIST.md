@@ -17,6 +17,7 @@ This checklist separates source-level review from browser/device verification. A
 
 ### Case Converter
 - [x] Uppercase, lowercase, title-case, and sentence-case actions are wired to the source and output fields.
+- [x] Sentence case capitalizes after sentence punctuation plus closing quotes/brackets; focused regression cases passed.
 - [ ] Verify contractions, apostrophes, hyphenated words, acronyms, Turkish locale behavior, and non-Latin scripts.
 
 ### JSON Formatter
@@ -27,6 +28,7 @@ This checklist separates source-level review from browser/device verification. A
 ### Base64 Converter
 - [x] UTF-8 encoding uses TextEncoder and chunked byte-to-binary conversion.
 - [x] Decoding uses fatal UTF-8 validation and catches malformed Base64.
+- [x] Node runtime checks passed UTF-8 round trips for Hindi, emoji, combining marks, CJK, ASCII, and empty input; malformed Base64 / invalid UTF-8 was rejected.
 - [ ] Verify empty input, Unicode round trips, whitespace, invalid alphabet, missing padding, and large input.
 
 ### URL Encoder
