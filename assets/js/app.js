@@ -320,7 +320,7 @@
   }
 
   if(tool==="image-compressor") {
-    let selectedFile=null,previewUrl=null,downloadUrl=null;
+    let selectedFile=null,previewUrl=null,downloadUrl=null,processingId=0;
     const fileInput=$("#file"),quality=$("#quality"),qualityValue=$("#qv"),format=$("#format");
     const updateQuality=()=>{
       const lossless=format.value==="image/png";
@@ -331,6 +331,7 @@
     format?.addEventListener("change",updateQuality);
     updateQuality();
     const resetSelection=()=>{
+      processingId++;
       if(previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl=null; }
       if(downloadUrl) { URL.revokeObjectURL(downloadUrl); downloadUrl=null; }
       $("#preview").textContent="Choose a JPG, PNG or WebP image to begin.";
@@ -347,6 +348,7 @@
         selectedFile=null; fileInput.value=""; resetSelection(); toast("Choose an image smaller than 25 MB."); return;
       }
       selectedFile=file;
+      processingId++;
       if(previewUrl) URL.revokeObjectURL(previewUrl);
       previewUrl=URL.createObjectURL(file);
       $("#preview").innerHTML="";
@@ -362,8 +364,12 @@
     $("#compress")?.addEventListener("click",()=>{
       if(!selectedFile) { toast("Choose an image first"); return; }
       const image=new Image();
+      const requestId=++processingId;
+      const sourceFile=selectedFile;
+      const sourceUrl=previewUrl;
+      const isCurrentRequest=()=>requestId===processingId&&selectedFile===sourceFile&&previewUrl===sourceUrl;
       image.onload=()=>{
-        if(!selectedFile||image.src!==previewUrl) return;
+        if(!isCurrentRequest()) return;
         const width=image.naturalWidth,height=image.naturalHeight;
         if(!width||!height||width*height>40000000||width>12000||height>12000) {
           toast("Image is too large to process safely (maximum 40 megapixels and 12,000 px per side)."); return;
@@ -379,24 +385,24 @@
         const mime=format.value;
         try { canvas.toBlob(blob=>{
           if(!blob) { toast("Could not create the output image"); return; }
-          if(!selectedFile||image.src!==previewUrl) return;
+          if(!isCurrentRequest()) return;
           if(blob.type!==mime) { toast("This output format is not supported by your browser"); return; }
           if(downloadUrl) URL.revokeObjectURL(downloadUrl);
           downloadUrl=URL.createObjectURL(blob);
           const link=$("#downloadImage");
           link.href=downloadUrl;
           link.download="toolnest-compressed."+({"image/webp":"webp","image/jpeg":"jpg","image/png":"png"}[mime]);
-          $("#before").textContent=(selectedFile.size/1024).toFixed(1)+" KB";
+          $("#before").textContent=(sourceFile.size/1024).toFixed(1)+" KB";
           $("#after").textContent=(blob.size/1024).toFixed(1)+" KB";
-          const saving=(1-blob.size/selectedFile.size)*100;
+          const saving=(1-blob.size/sourceFile.size)*100;
           $("#saved").textContent=saving>=0?saving.toFixed(1)+"% smaller":Math.abs(saving).toFixed(1)+"% larger";
           $("#imageResult").classList.remove("hidden");
           toast("Image is ready to download");
         },mime,mime==="image/png"?undefined:Number(quality.value)); }
         catch { toast("Image processing failed. Try a smaller image or another format."); }
       };
-      image.onerror=()=>toast("The selected image could not be decoded");
-      image.src=previewUrl;
+      image.onerror=()=>{ if(isCurrentRequest()) toast("The selected image could not be decoded"); };
+      image.src=sourceUrl;
     });
   }
 })();
