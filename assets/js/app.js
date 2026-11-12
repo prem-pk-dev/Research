@@ -65,7 +65,12 @@
       $$("[data-menu][aria-expanded='true']").forEach(button=>button.setAttribute("aria-expanded","false"));
     }
   });
-  $$(".links a").forEach(link=>link.addEventListener("click",()=>{
+  $(".links a").forEach(link=>{
+    try {
+      if(new URL(link.href,window.location.href).pathname===window.location.pathname) link.setAttribute("aria-current","page");
+    } catch { /* Ignore malformed or non-local navigation links. */ }
+  });
+  $(".links a").forEach(link=>link.addEventListener("click",()=>{
     const nav=link.closest(".links");
     nav?.classList.remove("open");
     nav?.closest(".nav")?.querySelector("[data-menu]")?.setAttribute("aria-expanded","false");
@@ -288,8 +293,10 @@
     const populate=()=>{
       const category=$("#type").value;
       const options=category==="temperature"?["C","F","K"]:Object.keys(units[category]);
-      $("#from").innerHTML=options.map(unit=>"<option>"+unit+"</option>").join("");
-      $("#to").innerHTML=options.map(unit=>"<option>"+unit+"</option>").join("");
+      const labels={C:"Celsius (°C)",F:"Fahrenheit (°F)",K:"Kelvin (K)",B:"Bytes (B)",KB:"Kilobytes (KB, 1,000 B)",MB:"Megabytes (MB, 1,000,000 B)",GB:"Gigabytes (GB, 1,000,000,000 B)",KiB:"Kibibytes (KiB, 1,024 B)",MiB:"Mebibytes (MiB, 1,048,576 B)",GiB:"Gibibytes (GiB, 1,073,741,824 B)",m:"Metres (m)",km:"Kilometres (km)",cm:"Centimetres (cm)",mm:"Millimetres (mm)",mi:"Miles (mi)",ft:"Feet (ft)",in:"Inches (in)",kg:"Kilograms (kg)",g:"Grams (g)",mg:"Milligrams (mg)",lb:"Pounds (lb)",oz:"Ounces (oz)"};
+      const markup=options.map(unit=>"<option value=\\""+unit+"\\">"+labels[unit]+"</option>").join("");
+      $("#from").innerHTML=markup;
+      $("#to").innerHTML=markup;
       if(category==="length") $("#to").value="cm";
       if(category==="weight") $("#to").value="g";
       if(category==="data") $("#to").value="MB";
