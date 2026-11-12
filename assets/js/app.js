@@ -39,12 +39,13 @@
   }
 
   // Shared navigation, theme and footer controls.
-  const savedTheme=localStorage.getItem("tn-theme");
+  let savedTheme=null;
+  try { savedTheme=localStorage.getItem("tn-theme"); } catch { /* Storage may be disabled by browser policy. */ }
   document.documentElement.dataset.theme=savedTheme==="dark"?"dark":"light";
   $$("[data-theme]").forEach(button=>button.addEventListener("click",()=>{
     const next=document.documentElement.dataset.theme==="dark"?"light":"dark";
     document.documentElement.dataset.theme=next;
-    localStorage.setItem("tn-theme",next);
+    try { localStorage.setItem("tn-theme",next); } catch { toast("Theme changed for this page; browser storage is unavailable."); }
   }));
   $$("[data-year]").forEach(node=>node.textContent=new Date().getFullYear());
   $$("[data-menu]").forEach(button=>button.addEventListener("click",()=>{
@@ -187,6 +188,7 @@
       return array;
     }
     const generate=()=>{
+      if(!globalThis.crypto?.getRandomValues) { toast("Secure password generation is unavailable in this browser context."); return; }
       const length=Math.max(8,Math.min(128,Math.floor(Number($("#length").value)||20)));
       const count=Math.max(1,Math.min(10,Math.floor(Number($("#count").value)||1)));
       const groups=[];
