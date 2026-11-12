@@ -5,3 +5,5 @@ button:disabled,.btn[aria-disabled="true"]{opacity:.55;cursor:not-allowed}
 img,canvas,svg{max-width:100%}
 @media(max-width:620px){.nav .actions>a.btn{display:none}.nav{gap:10px}.actions{gap:7px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+.links a[aria-current=page]{color:var(--brand);font-weight:800}.links a:focus-visible,.category:focus-visible,.card:focus-visible{outline:3px solid var(--cyan);outline-offset:4px;border-radius:10px}
