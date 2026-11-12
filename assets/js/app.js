@@ -333,6 +333,7 @@
     fileInput?.addEventListener("change",event=>{
       const file=event.target.files?.[0];
       if(!file) { selectedFile=null; resetSelection(); return; }
+      if(!file.size) { selectedFile=null; fileInput.value=""; resetSelection(); toast("The selected file is empty. Choose another image."); return; }
       if(!["image/jpeg","image/png","image/webp"].includes(file.type)) {
         selectedFile=null; fileInput.value=""; resetSelection(); toast("Choose a JPG, PNG or WebP image"); return;
       }
