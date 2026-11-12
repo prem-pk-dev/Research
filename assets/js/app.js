@@ -294,7 +294,7 @@
       const category=$("#type").value;
       const options=category==="temperature"?["C","F","K"]:Object.keys(units[category]);
       const labels={C:"Celsius (°C)",F:"Fahrenheit (°F)",K:"Kelvin (K)",B:"Bytes (B)",KB:"Kilobytes (KB, 1,000 B)",MB:"Megabytes (MB, 1,000,000 B)",GB:"Gigabytes (GB, 1,000,000,000 B)",KiB:"Kibibytes (KiB, 1,024 B)",MiB:"Mebibytes (MiB, 1,048,576 B)",GiB:"Gibibytes (GiB, 1,073,741,824 B)",m:"Metres (m)",km:"Kilometres (km)",cm:"Centimetres (cm)",mm:"Millimetres (mm)",mi:"Miles (mi)",ft:"Feet (ft)",in:"Inches (in)",kg:"Kilograms (kg)",g:"Grams (g)",mg:"Milligrams (mg)",lb:"Pounds (lb)",oz:"Ounces (oz)"};
-      const markup=options.map(unit=>"<option value=\\""+unit+"\\">"+labels[unit]+"</option>").join("");
+      const markup=options.map(unit=>'<option value="'+unit+'">'+labels[unit]+'</option>').join("");
       $("#from").innerHTML=markup;
       $("#to").innerHTML=markup;
       if(category==="length") $("#to").value="cm";
