@@ -20,7 +20,7 @@ A frontend-only, multi-page website built with HTML, CSS and vanilla JavaScript.
 - Static frontend only; no application backend, database or server-side file processing.
 - Core tool processing runs in the visitor's browser.
 - Local storage is used only for the light/dark theme preference.
-- Static JSON and HTML assets are served from Cloudflare Pages.
+- Static HTML, CSS, JavaScript, and supporting assets are served from Cloudflare Pages. The tool catalogue is currently authored in the page markup.
 
 ## Cloudflare Pages
 
