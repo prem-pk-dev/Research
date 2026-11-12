@@ -228,7 +228,8 @@
     const calculate=()=>{
       const rawX=$("#x").value,rawY=$("#y").value,rawOld=$("#old").value,rawNew=$("#new").value;
       const x=Number(rawX),y=Number(rawY),a=Number(rawOld),b=Number(rawNew);
-      const amount=x*y/100;
+      // Divide the larger-magnitude operand first to reduce avoidable overflow.
+      const amount=x===0||y===0?0:(Math.abs(x)>=100?x/100:y/100)*(Math.abs(x)>=100?y:x);
       $("#result1").textContent=rawX===""||rawY===""||!Number.isFinite(x)||!Number.isFinite(y)||!Number.isFinite(amount)
         ?"Enter numbers that produce a finite result":x+"% of "+y+" = "+Number(amount.toFixed(7));
       if(rawOld===""||rawNew===""||!Number.isFinite(a)||!Number.isFinite(b)) {
@@ -236,7 +237,9 @@
       } else if(a===0) {
         $("#result2").textContent="Percentage change is undefined when the original value is zero";
       } else {
-        const change=(b-a)/Math.abs(a)*100;
+        // Scale both values before subtraction so opposite-sign large values do not overflow.
+        const scale=Math.max(Math.abs(a),Math.abs(b));
+        const change=scale===0?0:((b/scale)-(a/scale))/Math.abs(a/scale)*100;
         $("#result2").textContent=Number.isFinite(change)
           ?Math.abs(change).toFixed(2)+"% "+(change>0?"increase":change<0?"decrease":"no change")
           :"Values are too large to calculate safely";
